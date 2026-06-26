@@ -1,4 +1,4 @@
-# WordPress and MariaDB Deployment with Ansible
+# noto-ansible - WordPress and MariaDB Deployment with Ansible
 
 ## Overview
 
@@ -236,4 +236,3 @@ docker compose ps
 * Database credentials are read from AWS Secrets Manager.
 * Generated `.env` files on the servers should be treated as sensitive.
 * EC2 instances are expected to have IAM permissions for SSM access.
-# noto-ansible
