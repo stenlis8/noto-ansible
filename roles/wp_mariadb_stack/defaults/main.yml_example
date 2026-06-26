@@ -1,0 +1,17 @@
+aws_region: eu-central-1
+
+docker_compose_version: "2.29.7"
+docker_users:
+  - ec2-user
+
+wp_base_dir: /srv/docker/wordpress
+wp_port: "{{ wordpress_port }}"
+wordpress_db_host: "{{ db_ip }}:3306"
+
+mariadb_base_dir: /srv/docker/mariadb
+mariadb_port: "3306"
+
+db_secret_name: "{{ db_secret }}"
+
+wordpress_image: wordpress:php8.3-apache
+mariadb_image: mariadb:11

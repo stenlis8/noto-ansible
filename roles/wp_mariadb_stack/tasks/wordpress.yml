@@ -1,0 +1,34 @@
+- name: Create WordPress directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: 33
+    group: 33
+    mode: "0775"
+  loop:
+    - "{{ wp_base_dir }}"
+    - "{{ wp_base_dir }}/html"
+    - "{{ wp_base_dir }}/config"
+
+- name: Deploy WordPress env file
+  ansible.builtin.template:
+    src: wordpress.env.j2
+    dest: "{{ wp_base_dir }}/config/wordpress.env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Deploy WordPress Compose file
+  ansible.builtin.template:
+    src: wordpress-compose.yml.j2
+    dest: "{{ wp_base_dir }}/compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start WordPress stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ wp_base_dir }}"
+    state: present
+    pull: missing

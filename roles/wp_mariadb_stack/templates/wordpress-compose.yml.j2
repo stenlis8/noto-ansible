@@ -1,0 +1,14 @@
+services:
+  wordpress:
+    image: {{ wordpress_image }}
+    container_name: wordpress
+    restart: unless-stopped
+
+    ports:
+      - "{{ wp_port }}:80"
+
+    env_file:
+      - ./config/wordpress.env
+
+    volumes:
+      - {{ wp_base_dir }}/html:/var/www/html:Z

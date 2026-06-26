@@ -1,0 +1,17 @@
+services:
+  mariadb:
+    image: {{ mariadb_image }}
+    container_name: mariadb
+    restart: unless-stopped
+
+    ports:
+      - "{{ mariadb_port }}:3306"
+
+    env_file:
+      - ./config/mariadb.env
+
+    volumes:
+      - {{ mariadb_base_dir }}/data:/var/lib/mysql:Z
+
+    command:
+      - --bind-address=0.0.0.0

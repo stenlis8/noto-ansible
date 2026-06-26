@@ -1,0 +1,34 @@
+- name: Create MariaDB directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: 999
+    group: 999
+    mode: "0770"
+  loop:
+    - "{{ mariadb_base_dir }}"
+    - "{{ mariadb_base_dir }}/data"
+    - "{{ mariadb_base_dir }}/config"
+
+- name: Deploy MariaDB env file
+  ansible.builtin.template:
+    src: mariadb.env.j2
+    dest: "{{ mariadb_base_dir }}/config/mariadb.env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Deploy MariaDB Compose file
+  ansible.builtin.template:
+    src: mariadb-compose.yml.j2
+    dest: "{{ mariadb_base_dir }}/compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start MariaDB stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ mariadb_base_dir }}"
+    state: present
+    pull: missing

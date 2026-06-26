@@ -1,0 +1,5 @@
+- name: Deploy WordPress and MariaDB
+  hosts: aws_ec2 
+  become: true
+  roles:
+    - wp_mariadb_stack

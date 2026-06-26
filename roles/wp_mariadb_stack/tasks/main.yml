@@ -1,0 +1,17 @@
+- name: Install Docker
+  ansible.builtin.import_tasks: docker.yml
+
+- name: Read AWS secrets
+  ansible.builtin.import_tasks: secrets.yml
+
+- name: Configure SELinux
+  ansible.builtin.import_tasks: selinux.yml
+
+- name: Deploy MariaDB
+  ansible.builtin.import_tasks: mariadb.yml
+  when: inventory_hostname in groups['database']
+
+- name: Deploy WordPress
+  ansible.builtin.import_tasks: wordpress.yml
+  when: inventory_hostname in groups['wordpress']
+

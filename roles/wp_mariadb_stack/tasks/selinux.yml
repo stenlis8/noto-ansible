@@ -1,0 +1,31 @@
+- name: Check SELinux status
+  ansible.builtin.command: getenforce
+  register: selinux_status
+  changed_when: false
+  failed_when: false
+
+- name: Set SELinux path list
+  ansible.builtin.set_fact:
+    container_selinux_paths:
+      - "{{ wp_base_dir }}/html"
+      - "{{ mariadb_base_dir }}/data"
+
+- name: Create SELinux-managed directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0775"
+  loop: "{{ container_selinux_paths }}"
+
+- name: Add persistent SELinux context for container bind mounts
+  community.general.sefcontext:
+    target: "{{ item }}(/.*)?"
+    setype: container_file_t
+    state: present
+  loop: "{{ container_selinux_paths }}"
+  when: selinux_status.stdout in ['Enforcing', 'Permissive']
+
+- name: Restore SELinux context
+  ansible.builtin.command: "restorecon -Rv {{ item }}"
+  loop: "{{ container_selinux_paths }}"
+  when: selinux_status.stdout in ['Enforcing', 'Permissive']
